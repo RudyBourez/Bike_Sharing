@@ -7,13 +7,16 @@
         <br>
         <form method="POST" class="form-register">
             {{ form.hidden_tag() }}
-            
-            {{ form.numero.label() }}
-            {{ form.numero(placeholder="0m", class="form-control") }}
+
+            {{ form.date.label() }}
+            {{ form.date(placeholder="0m", class="form-control") }}
+
+            {{ form.hour.label() }}
+            {{ form.hour(placeholder="0m", class="form-control") }}
 
             <br>
             {{ form.submit(class="btn btn-lg btn-primary d-block", id="button")}}
         </form>
-    </div>  
+    </div>
 
 </body>
