@@ -1,4 +1,6 @@
-Flask
+flask
+flask-wtf
+wtforms
 gunicorn
 pandas
 numpy
