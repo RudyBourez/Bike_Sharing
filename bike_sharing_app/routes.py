@@ -22,7 +22,6 @@ def predict():
         hour = form.hour.data
         df_pred = pd.read_csv("Datas/data_test.csv")
         data = df_pred[(df_pred["month"]== month) & (df_pred["day_number"] == day) & (df_pred["hour"]== hour) & (df_pred["year"] == year)]
-        print(data)
         model = pickle.load(open("Modèles/modele.sav", "rb"))
         pred = np.exp(model.predict(data)) - 1
         return redirect(url_for("afficher_pred", pred=pred))

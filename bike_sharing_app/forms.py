@@ -3,7 +3,7 @@ from wtforms import DateField, SubmitField, IntegerField
 
 
 class Prediction_form(FlaskForm):
-    """[Form to login]
+    """[Form to make a prediction]
     """
 
     date = DateField(label="date")
