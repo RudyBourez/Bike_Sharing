@@ -2,14 +2,18 @@ from bike_sharing_app import app
 import pickle
 import pandas as pd
 import numpy as np
-from .forms import Prediction_form
+from .forms import Prediction_form, LoginForm
 from flask import render_template, request, redirect, url_for
+from flask_login import login_user, current_user, logout_user, login_required
 
 
 @app.route("/")
-@app.route("/home")
 def home():
     return render_template('Home.html')
+
+@app.route("/login")
+def login():
+    form = 
 
 @app.route("/prediction", methods=["GET", "POST"])
 def prediction():
