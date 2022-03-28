@@ -1,0 +1,15 @@
+{% extends "Home.html" %}
+
+{% block content %}
+    <form method="POST" class="form-register">
+        {{ form.hidden_tag() }}
+
+        {{ form.mail.label() }}
+        {{ form.mail(class="form-control") }}
+
+        {{ form.password.label() }}
+        {{ form.password(class="form-control") }}
+
+        {{ form.submit(class="btn btn-lg btn-primary d-block", id="button") }}
+    </form> 
+{% endblock %}

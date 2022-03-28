@@ -3,19 +3,37 @@ import pickle
 import pandas as pd
 import numpy as np
 from .forms import Prediction_form, LoginForm
-from flask import render_template, request, redirect, url_for
-from flask_login import login_user, current_user, logout_user, login_required
-
+from flask import render_template, request, redirect, url_for, flash
+from flask_login import login_user, logout_user, login_required
+from .models import User
+from werkzeug.security import check_password_hash
 
 @app.route("/")
 def home():
     return render_template('Home.html')
 
-@app.route("/login")
+@app.route("/login", methods=["GET","POST"])
 def login():
-    form = 
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email_address=form.mail.data).first()
+        print("passer ici")
+        if user and check_password_hash(user.password_hash, form.password.data):
+            login_user(user)
+            flash("Logged in with success")
+            return redirect(url_for('prediction'))
+        else:
+            flash("Mail address or password invalid")
+    return render_template('login.html', form=form)
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return render_template('Home.html')
 
 @app.route("/prediction", methods=["GET", "POST"])
+@login_required
 def prediction():
     form = Prediction_form()
     if form.validate_on_submit():
@@ -28,10 +46,10 @@ def prediction():
         model = pickle.load(open("Modèles/modele.sav", "rb"))
         pred = np.exp(model.predict(data)) - 1
         return redirect(url_for("afficher_pred", pred=pred))
-
     return render_template('Prediction.html',form=form)
 
 @app.route("/statistics")
+@login_required
 def statistics():
     return render_template('Statistics.html')
 
