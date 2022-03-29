@@ -9,6 +9,17 @@ body {
     background-color: rgb(80, 137, 52);
     height: 165px;
 }
+
 #intro{
     margin-top: 100px;
+}
+
+form .btn{
+  width: 300px;
+  background-color: rgb(80, 137, 52);
+}
+
+form label{
+  color: rgb(80, 137, 52);
+  font-size: 20px;
 }
