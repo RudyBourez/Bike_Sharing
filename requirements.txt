@@ -12,3 +12,5 @@ sklearn == 0.0
 meteofrance-api
 gunicorn
 flask-sqlalchemy
+flask-login
+werkzeug
