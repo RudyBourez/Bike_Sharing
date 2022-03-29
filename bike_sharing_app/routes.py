@@ -23,7 +23,7 @@ def login():
             return redirect(url_for('prediction'))
         else:
             flash("Mail address or password invalid", category="danger")
-    return render_template('login.html', form=form)
+    return render_template('Login.html', form=form)
 
 @app.route("/logout")
 @login_required
