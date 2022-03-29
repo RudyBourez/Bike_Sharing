@@ -13,3 +13,4 @@ meteofrance-api
 gunicorn
 flask-sqlalchemy
 flask-login
+Werkzeug
