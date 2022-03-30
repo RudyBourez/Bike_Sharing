@@ -15,4 +15,4 @@ login_manager.login_view = "login"
 from .routes import *
 from .models import *
 
-models.init_db()
+# models.init_db()
