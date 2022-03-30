@@ -1,0 +1,57 @@
+{% extends "Home.html" %}
+
+{% block title %}
+  Table prediction
+{% endblock %}
+
+{% block content %}
+<div  class="row" >
+    <div id = "table_pred" class="col-6">
+        <table class="table table-striped text-center">
+            <thead>
+            <tr>
+                
+                {% for col in pred["columns"] %} 
+                <th scope="col">{{ col }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+                {% for row in pred["data"] %}
+            <tr>
+                {% for value in row%}
+                <td>{{value}}</td>
+                {% endfor %}
+            </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+    <div  class="col-6">
+        <center> 
+            <h1 id="titre_graph1">Prévision sur 2 jours </h1>
+            <div id = "graph1">
+            <div id='chart' class='chart'”></div>
+            </div>
+          </center>  
+          <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+          <script type='text/javascript'>
+            var graphs = {{graphJSON | safe}};
+            Plotly.plot('chart',graphs,{});
+          </script>
+
+        <center> 
+            <h1 id="titre_graph2">Prévision sur 2 jours </h1>
+            <div id = "graph2">
+            <div id='chart2' class='chart'”></div>
+            </div>
+          </center>  
+          <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+          <script type='text/javascript'>
+            var graphs = {{graphJSON | safe}};
+            Plotly.plot('chart2',graphs,{});
+          </script>
+    </div>
+</div>
+{% endblock %}

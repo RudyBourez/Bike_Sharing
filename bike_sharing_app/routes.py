@@ -9,6 +9,9 @@ from .models import User
 from werkzeug.security import check_password_hash
 from meteofrance_api import MeteoFranceClient
 from datetime import datetime
+import json
+import plotly
+import plotly.express as px
 
 @app.route("/")
 def home():
@@ -53,18 +56,44 @@ def prediction():
 @app.route("/statistics")
 @login_required
 def statistics():
-    return render_template('Statistics.html')
+    df = create_df()
+    model = pickle.load(open("Modèles/modele.sav", "rb"))
+    pred = np.exp(model.predict(df)) - 1
+    df["count"] = pred
+    fig = px.bar(df, x='hour', y='count', color="day_number", barmode='group')
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    return render_template('Statistics.html',graphJSON=graphJSON)
 
 @app.route("/afficher_pred")
 def afficher_pred():
     pred = request.args.get("pred")
-    return render_template("afficher.html", pred=pred)
+    return render_template("afficher.html")
 
 
 
 
 @app.route("/table_prediction")
 def table_prediction():
+    df = create_df()
+
+    #modele : 
+    model = pickle.load(open("Modèles/modele.sav", "rb"))
+    pred = np.exp(model.predict(df)) - 1
+    #return redirect(url_for("afficher_pred",pred=pred))
+    
+    # df_pred to put in html page
+    df_pred = df[["month","day_number","hour"]]
+    df_pred["count"] = pred.astype(int)
+
+    #graphique :
+    fig = px.scatter(df_pred[0:36], x='hour', y='count', color="day_number",color_discrete_sequence=["green"])
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+    return render_template("table_prediction.html",pred = df_pred.to_dict(orient="split"),graphJSON=graphJSON)
+
+
+
+def create_df():
     client = MeteoFranceClient()
     weather_forecast = client.get_forecast(latitude=50.62925, longitude=3.057256)
     forecast = weather_forecast.forecast
@@ -72,7 +101,6 @@ def table_prediction():
     df["temp"] = [d["T"]["value"] for d in forecast]
     df["humidity"] = [d["humidity"] for d in forecast]
     df["windspeed"] = [d["wind"]["speed"] for d in forecast]
-    df["hour"] = [datetime.fromtimestamp(d["dt"]).hour for d in forecast]
     df["hour"] = [datetime.fromtimestamp(d["dt"]).hour for d in forecast]
     df["year"] = [datetime.fromtimestamp(d["dt"]).year for d in forecast]
     df["month"] = [datetime.fromtimestamp(d["dt"]).month for d in forecast]
@@ -130,15 +158,8 @@ def table_prediction():
                 season.append(2)
             else:
                 season.append(3)
-    print("taille de season :",len(season))
-    print("taille weather :", len(weather))
-    print("taille forecast :",len(forecast))
     df["season"] = season
     df["holiday"] = holiday
     df["weather"] = weather
 
-    #modele : 
-    model = pickle.load(open("Modèles/modele.sav", "rb"))
-    pred = np.exp(model.predict(df)) - 1
-    print("taille de pred", len(pred))
-    return redirect(url_for("afficher_pred",pred=pred))
+    return df
