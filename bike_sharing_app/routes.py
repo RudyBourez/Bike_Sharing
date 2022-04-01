@@ -48,6 +48,7 @@ def statistics():
 @login_required
 def table_prediction():
     df = create_df()
+    print(df)
     #modele : 
     liste = []
     for i in range(len(df)):
