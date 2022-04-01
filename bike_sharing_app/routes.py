@@ -12,6 +12,7 @@ from datetime import datetime
 import json
 import plotly
 import plotly.express as px
+import requests
 
 @app.route("/")
 def home():
@@ -75,15 +76,16 @@ def afficher_pred():
 @app.route("/table_prediction")
 def table_prediction():
     df = create_df()
-
+    print(df)
     #modele : 
-    model = pickle.load(open("Modèles/modele.sav", "rb"))
-    pred = np.exp(model.predict(df)) - 1
-    #return redirect(url_for("afficher_pred",pred=pred))
+    liste = []
+    for i in range(len(df)):
+        response = requests.get(f"https://bike-sharing-rfm-api.herokuapp.com/{df.iloc[[i]].to_json(orient='columns')}")
+        liste.append(eval(response.json())["count"].get(f'{i}'))
     
     # df_pred to put in html page
     df_pred = df[["month","day_number","hour"]]
-    df_pred["count"] = pred.astype(int)
+    df_pred["count"] = liste
 
     #graphique :
     fig = px.scatter(df_pred[0:36], x='hour', y='count', color="day_number",color_discrete_sequence=["green"])
@@ -111,20 +113,12 @@ def create_df():
     df["month"] = [datetime.fromtimestamp(d["dt"]).month for d in forecast]
     df["day_number"] = [datetime.fromtimestamp(d["dt"]).day for d in forecast]
     df["day"] = [datetime.fromtimestamp(d["dt"]).weekday for d in forecast]
-    df["workingday"] = [(d=="Saturday") or (d=="Sunday") for d in df["day"]]
+    df["workingday"] = [int(d=="Saturday") or int(d=="Sunday") for d in df["day"]]
     #liste des jours de vacances : (month,day)
     liste_holiday = [(7, 4),(4, 16),(1, 2),(9, 3),(10, 8),(1, 17),(4, 15),(9, 5),(10, 10),(11, 12),(1, 16),(11, 11)]
     season = []
     holiday = []
-    weather = []
     for i in range(0,len(forecast)):
-
-        weather.append(1)
-        #222393
-        # 3 : automne : 21/9
-        # 4 : hiver : 21/12
-        # 1 : printemps : 21/03
-        # 2 : ete : 21/06
         month = df.loc[i]["month"]
         day = df.loc[i]["day_number"]
 
@@ -165,6 +159,4 @@ def create_df():
                 season.append(3)
     df["season"] = season
     df["holiday"] = holiday
-    df["weather"] = weather
-
     return df
