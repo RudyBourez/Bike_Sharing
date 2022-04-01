@@ -1,0 +1,55 @@
+
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: whitesmoke;
+}
+
+.navbar{
+    background-color: rgb(80, 137, 52);
+    height: 165px;
+}
+
+#intro{
+    margin-top: 100px;
+}
+
+form .btn{
+  width: 300px;
+  background-color: rgb(80, 137, 52);
+}
+
+form label{
+  color: rgb(80, 137, 52);
+  font-size: 20px;
+}
+
+#table_pred{
+  max-width: 40%;
+  margin: 50px auto 0px auto;
+  border: solid rgb(80, 137, 52);
+  padding: 10px;
+}
+
+#graph1{
+  border: solid rgb(130, 194, 98);
+  margin: 0 50px 0px 50px;
+}
+#titre_graph1{
+  background-color: rgb(130, 194, 98);
+  margin: 50px 50px 0px 50px;
+  color: white;
+}
+#graph2{
+  border: solid rgb(130, 194, 98);
+  margin: 0 50px 0px 50px;
+}
+#titre_graph2{
+  background-color: rgb(130, 194, 98);
+  margin: 50px 50px 0px 50px;
+  color: white;
+}
+
+
+

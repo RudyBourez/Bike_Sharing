@@ -1,0 +1,17 @@
+{% extends "Home.html" %}
+
+{% block title %}
+  Statistics
+{% endblock %}
+
+{% block content %}
+<center> 
+  <h1>Prévisions sur 2 jours </h1>
+  <div id='chart' class='chart'”></div>
+</center>  
+<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+<script type='text/javascript'>
+  var graphs = {{graphJSON | safe}};
+  Plotly.plot('chart',graphs,{});
+</script>
+{% endblock %}
