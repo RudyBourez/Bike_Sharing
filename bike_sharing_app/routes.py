@@ -55,16 +55,16 @@ def table_prediction():
         liste.append(eval(response.json())["count"].get(f'{i}'))
     
     # df_pred to put in html page
-    df_pred = df[["month","day_number","hour"]]
+    df_pred = df[["month","day","day_number","hour"]]
     df_pred["count"] = liste
 
     #graphique :
-    fig = px.scatter(df_pred[0:36], x='hour', y='count', color="day_number",color_discrete_sequence=["green"])
+    fig = px.scatter(df_pred[0:36], x='hour', y='count', color='day')
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
     #graphique moyen terme:
     
-    fig2 = px.scatter(df_pred[37:], x='hour', y='count', color="day_number",color_discrete_sequence=["green"])
+    fig2 = px.scatter(df_pred[37:], x='hour', y='count', color='day_number')
     graphJSON_moyen = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
 
     return render_template("table_prediction.html",pred = df_pred.to_dict(orient="split"),graphJSON=graphJSON,graphJSON_moyen=graphJSON_moyen)
@@ -85,7 +85,7 @@ def create_df():
     df["day_number"] = [datetime.fromtimestamp(d["dt"]).day for d in forecast]
     df["day"] = [datetime.fromtimestamp(d["dt"]) for d in forecast]
     df["day"] = df["day"].dt.strftime("%A %d. %B %Y").str.extract(r'(\w+)\s')
-    df["workingday"] = [int(d=="Saturday") or int(d=="Sunday") for d in df["day"]]
+    df["workingday"] = [int(d not in ["Saturday","Sunday"]) for d in df["day"]]
     #liste des jours de vacances : (month,day)
     liste_holiday = [(7, 4),(4, 16),(1, 2),(9, 3),(10, 8),(1, 17),(4, 15),(9, 5),(10, 10),(11, 12),(1, 16),(11, 11)]
     season = []
