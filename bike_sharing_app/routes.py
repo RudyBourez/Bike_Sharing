@@ -2,7 +2,7 @@ from bike_sharing_app import app
 import pickle
 import pandas as pd
 import numpy as np
-from .forms import Prediction_form, LoginForm
+from .forms import LoginForm
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required
 from .models import User
@@ -38,21 +38,6 @@ def logout():
     flash("Logged out with success", category="success")
     return redirect(url_for("home"))
 
-@app.route("/prediction", methods=["GET", "POST"])
-@login_required
-def prediction():
-    form = Prediction_form()
-    if form.validate_on_submit():
-        year = form.date.data.year
-        month = form.date.data.month
-        day = form.date.data.day
-        hour = form.hour.data
-        df_pred = pd.read_csv("Datas/data_test.csv")
-        data = df_pred[(df_pred["month"]== month) & (df_pred["day_number"] == day) & (df_pred["hour"]== hour) & (df_pred["year"] == year)]
-        model = pickle.load(open("Modèles/model_stack.sav", "rb"))
-        pred = np.exp(model.predict(data)) - 1
-        return redirect(url_for("afficher_pred", pred=pred))
-    return render_template('Prediction.html',form=form)
 
 @app.route("/statistics")
 @login_required
@@ -65,18 +50,10 @@ def statistics():
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     return render_template('Statistics.html',graphJSON=graphJSON)
 
-@app.route("/afficher_pred")
-def afficher_pred():
-    pred = request.args.get("pred")
-    return render_template("afficher.html")
-
-
-
-
 @app.route("/table_prediction")
+@login_required
 def table_prediction():
     df = create_df()
-    print(df)
     #modele : 
     liste = []
     for i in range(len(df)):
