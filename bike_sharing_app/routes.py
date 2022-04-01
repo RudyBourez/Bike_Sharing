@@ -42,13 +42,7 @@ def logout():
 @app.route("/statistics")
 @login_required
 def statistics():
-    df = create_df()
-    model = pickle.load(open("Modèles/modele.sav", "rb"))
-    pred = np.exp(model.predict(df)) - 1
-    df["count"] = pred
-    fig = px.bar(df, x='hour', y='count', color="day_number", barmode='group')
-    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    return render_template('Statistics.html',graphJSON=graphJSON)
+    return render_template('Statistics.html')
 
 @app.route("/table_prediction")
 @login_required
