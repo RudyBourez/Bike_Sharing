@@ -89,7 +89,12 @@ def table_prediction():
     fig = px.scatter(df_pred[0:36], x='hour', y='count', color="day_number",color_discrete_sequence=["green"])
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-    return render_template("table_prediction.html",pred = df_pred.to_dict(orient="split"),graphJSON=graphJSON)
+    #graphique moyen terme:
+    
+    fig2 = px.scatter(df_pred[37:], x='hour', y='count', color="day_number",color_discrete_sequence=["green"])
+    graphJSON_moyen = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
+
+    return render_template("table_prediction.html",pred = df_pred.to_dict(orient="split"),graphJSON=graphJSON,graphJSON_moyen=graphJSON_moyen)
 
 
 
