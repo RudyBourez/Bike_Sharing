@@ -32,24 +32,35 @@ form label{
   padding: 10px;
 }
 
-#graph1{
+#graph1, #graph2{
   border: solid rgb(130, 194, 98);
   margin: 0 50px 0px 50px;
 }
-#titre_graph1{
-  background-color: rgb(130, 194, 98);
-  margin: 50px 50px 0px 50px;
-  color: white;
-}
-#graph2{
-  border: solid rgb(130, 194, 98);
-  margin: 0 50px 0px 50px;
-}
-#titre_graph2{
+#titre_graph1, #titre_graph2{
   background-color: rgb(130, 194, 98);
   margin: 50px 50px 0px 50px;
   color: white;
 }
 
+section{
+  border-radius: 20px;
+}
 
+section h2{
+  line-height: 80px;
+  border-radius: 20px 20px 0 0;
+}
 
+.left img{
+  margin-left: 8%;
+  border-right : 2px solid black;
+  height: 75vh;
+  padding: 5% 8% 5% 0;
+}
+
+.right img{
+  margin-right: 8%;
+  border-left : 2px solid black;
+  height: 75vh;
+  padding: 5% 0 5% 8%;
+}

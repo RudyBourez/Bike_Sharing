@@ -43,7 +43,7 @@
                 </li>
               {% if current_user.is_authenticated %}
                 <li class="nav-item ml-3">
-                  <a class="nav-link item text-white" href="{{ url_for('table_prediction') }}"><i class="material-icons" style="color:white">dashboard</i><br/>Predictions</a>
+                  <a class="nav-link item text-white" href="{{ url_for('make_pred') }}"><i class="material-icons" style="color:white">dashboard</i><br/>Predictions</a>
                 </li>
                 <li class="nav-item ml-3">
                   <a class="nav-link item text-white" href="{{ url_for('statistics') }}" ><i class="material-icons" style="color:white">equalizer</i><br/>Stats</a>
@@ -75,9 +75,9 @@
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category,message in messages %}
-                <div class="alert alert-{{ category }} alter-dismissable fade show" role="alert" id="alert">
+                <div class="alert alert-{{ category }} alter-dismissable fade show" role="alert">
                     {{ message }}
-                    <button type="button" class="close" data-dismiss="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>

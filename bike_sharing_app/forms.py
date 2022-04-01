@@ -2,12 +2,12 @@ from flask_wtf import FlaskForm
 from wtforms import DateField, SubmitField, IntegerField, EmailField, PasswordField
 from wtforms.validators import DataRequired
 
-class Prediction_form(FlaskForm):
+class PredictionForm(FlaskForm):
     """[Form to make a prediction]
     """
 
-    date = DateField(label="date")
-    hour = IntegerField(label="heure")
+    date = DateField(label="Date")
+    hour = IntegerField(label="Heure")
     submit = SubmitField(label=" Prédire")
 
 class LoginForm(FlaskForm):

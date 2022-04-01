@@ -2,7 +2,7 @@ from bike_sharing_app import app
 import pickle
 import pandas as pd
 import numpy as np
-from .forms import LoginForm
+from .forms import LoginForm, PredictionForm
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required
 from .models import User
@@ -69,6 +69,18 @@ def table_prediction():
 
     return render_template("table_prediction.html",pred = df_pred.to_dict(orient="split"),graphJSON=graphJSON,graphJSON_moyen=graphJSON_moyen)
 
+@app.route("/make_pred", methods=["GET","POST"])
+@login_required
+def make_pred():
+    form = PredictionForm()
+    if form.validate_on_submit():
+        flash("Cela peut prendre quelques minutes", category="success")
+        heure = form.hour.data
+        month = form.date.data.month
+        day_number = form.date.data.day
+        day = form.date.data.strftime("%A")
+        return redirect(url_for("make_pred"))
+    return render_template("afficher.html", form=form)
 
 
 def create_df():
