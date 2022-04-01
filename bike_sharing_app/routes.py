@@ -36,7 +36,7 @@ def login():
 def logout():
     logout_user()
     flash("Logged out with success", category="success")
-    return render_template('Home.html')
+    return redirect(url_for("home"))
 
 @app.route("/prediction", methods=["GET", "POST"])
 @login_required
@@ -112,7 +112,8 @@ def create_df():
     df["year"] = [datetime.fromtimestamp(d["dt"]).year for d in forecast]
     df["month"] = [datetime.fromtimestamp(d["dt"]).month for d in forecast]
     df["day_number"] = [datetime.fromtimestamp(d["dt"]).day for d in forecast]
-    df["day"] = [datetime.fromtimestamp(d["dt"]).weekday for d in forecast]
+    df["day"] = [datetime.fromtimestamp(d["dt"]) for d in forecast]
+    df["day"] = df["day"].dt.strftime("%A %d. %B %Y").str.extract(r'(\w+)\s')
     df["workingday"] = [int(d=="Saturday") or int(d=="Sunday") for d in df["day"]]
     #liste des jours de vacances : (month,day)
     liste_holiday = [(7, 4),(4, 16),(1, 2),(9, 3),(10, 8),(1, 17),(4, 15),(9, 5),(10, 10),(11, 12),(1, 16),(11, 11)]
