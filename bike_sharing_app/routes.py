@@ -26,7 +26,7 @@ def login():
         if user and check_password_hash(user.password_hash, form.password.data):
             login_user(user)
             flash("Logged in with success", category="success")
-            return redirect(url_for('prediction'))
+            return redirect(url_for('home'))
         else:
             flash("Mail address or password invalid", category="danger")
     return render_template('Login.html', form=form)
