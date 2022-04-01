@@ -56,7 +56,7 @@ def table_prediction():
     
     # df_pred to put in html page
     df_pred = df[["month","day","day_number","hour"]]
-    df_pred["count"] = liste
+    df_pred["count"] = [round(i) for i in liste]
 
     #graphique :
     fig = px.scatter(df_pred[0:36], x='hour', y='count', color='day')
@@ -64,7 +64,7 @@ def table_prediction():
 
     #graphique moyen terme:
     
-    fig2 = px.scatter(df_pred[37:], x='hour', y='count', color='day_number')
+    fig2 = px.scatter(df_pred[37:], x='hour', y='count', color=df['day_number'][37:].astype(str))
     graphJSON_moyen = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
 
     return render_template("table_prediction.html",pred = df_pred.to_dict(orient="split"),graphJSON=graphJSON,graphJSON_moyen=graphJSON_moyen)
@@ -79,6 +79,7 @@ def create_df():
     df["temp"] = [d["T"]["value"] for d in forecast]
     df["humidity"] = [d["humidity"] for d in forecast]
     df["windspeed"] = [d["wind"]["speed"] for d in forecast]
+    df["datetime"] = [datetime.fromtimestamp(d["dt"]).strftime("%m %d") for d in forecast]
     df["hour"] = [datetime.fromtimestamp(d["dt"]).hour for d in forecast]
     df["year"] = [datetime.fromtimestamp(d["dt"]).year for d in forecast]
     df["month"] = [datetime.fromtimestamp(d["dt"]).month for d in forecast]
@@ -101,34 +102,16 @@ def create_df():
             holiday.append(0)
 
         # saison :
-        if (month>9) & (month<12):
-            season.append(3) 
-        if month == 12:
-            if day < 21:
-                season.append(3)
-            else:
-                season.append(4)
-        if (month>=1) & (month<3):
-            season.append(4)
-        if month == 3:
-            if day<21:
-                season.append(4)
-            else:
-                season.append(1)
-        if (month>3) & (month<6):
+        if  "03 20" <= df.loc[i]["datetime"] <= "06 20":
             season.append(1)
-        if month == 6:
-            if day < 21:
-                season.append(1)
-            else:
-                season.append(2)
-        if (month>6) & (month<9):
+        elif  "06 21" <= df.loc[i]["datetime"] <= "09 22":
             season.append(2)
-        if month == 9:
-            if day<21:
-                season.append(2)
-            else:
-                season.append(3)
+        elif  "09 23" < df.loc[i]["datetime"] < "12 22":
+            season.append(3)
+        else:
+            season.append(4)
+
     df["season"] = season
     df["holiday"] = holiday
-    return df
+
+    return df.drop("datetime", axis=1)
