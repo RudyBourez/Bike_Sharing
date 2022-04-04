@@ -47,7 +47,7 @@ def statistics():
 @app.route("/table_prediction")
 @login_required
 def table_prediction():
-    df = create_df()
+    df = create_df(with_meteo=True)
     #modele : 
     liste = []
     for i in range(len(df)):
@@ -75,55 +75,70 @@ def make_pred():
     form = PredictionForm()
     if form.validate_on_submit():
         flash("Cela peut prendre quelques minutes", category="success")
-        heure = form.hour.data
+        hour = form.hour.data
         month = form.date.data.month
-        day_number = form.date.data.day
-        day = form.date.data.strftime("%A")
-        return redirect(url_for("make_pred"))
+        day = form.date.data.day
+        return redirect(url_for("prediction",month=month, day=day, hour=hour))
     return render_template("afficher.html", form=form)
 
+@app.route("/prediction/<month>&<day>&<hour>")
+@login_required
+def prediction(month, day, hour):
+    df = create_df(with_meteo=False, month=int(month), day=int(day), hour=int(hour))
+    response = requests.get(f"https://bike-sharing-rfm-api.herokuapp.com/{df.to_json(orient='columns')}")
+    print(response.json())
+    prediction = eval(response.json())["count"].values()
+    return render_template("Forecast.html", prediction=prediction)
 
-def create_df():
-    client = MeteoFranceClient()
-    weather_forecast = client.get_forecast(latitude=50.62925, longitude=3.057256)
-    forecast = weather_forecast.forecast
-    df = pd.DataFrame()
-    df["temp"] = [d["T"]["value"] for d in forecast]
-    df["humidity"] = [d["humidity"] for d in forecast]
-    df["windspeed"] = [d["wind"]["speed"] for d in forecast]
-    df["datetime"] = [datetime.fromtimestamp(d["dt"]).strftime("%m %d") for d in forecast]
-    df["hour"] = [datetime.fromtimestamp(d["dt"]).hour for d in forecast]
-    df["year"] = [datetime.fromtimestamp(d["dt"]).year for d in forecast]
-    df["month"] = [datetime.fromtimestamp(d["dt"]).month for d in forecast]
-    df["day_number"] = [datetime.fromtimestamp(d["dt"]).day for d in forecast]
-    df["day"] = [datetime.fromtimestamp(d["dt"]) for d in forecast]
-    df["day"] = df["day"].dt.strftime("%A %d. %B %Y").str.extract(r'(\w+)\s')
-    df["workingday"] = [int(d not in ["Saturday","Sunday"]) for d in df["day"]]
-    #liste des jours de vacances : (month,day)
-    liste_holiday = [(7, 4),(4, 16),(1, 2),(9, 3),(10, 8),(1, 17),(4, 15),(9, 5),(10, 10),(11, 12),(1, 16),(11, 11)]
-    season = []
-    holiday = []
-    for i in range(0,len(forecast)):
-        month = df.loc[i]["month"]
-        day = df.loc[i]["day_number"]
+def create_df(with_meteo:bool, day=None, month=None, hour=None):
+    
+    if with_meteo:
+        df = pd.DataFrame()
+        client = MeteoFranceClient()
+        weather_forecast = client.get_forecast(latitude=50.62925, longitude=3.057256)
+        forecast = weather_forecast.forecast
+        df["temp"] = [d["T"]["value"] for d in forecast]
+        df["humidity"] = [d["humidity"] for d in forecast]
+        df["windspeed"] = [d["wind"]["speed"] for d in forecast]
+        df["datetime"] = [datetime.fromtimestamp(d["dt"]).strftime("%m %d") for d in forecast]
+        df["hour"] = [datetime.fromtimestamp(d["dt"]).hour for d in forecast]
+        df["year"] = [datetime.fromtimestamp(d["dt"]).year for d in forecast]
+        df["month"] = [datetime.fromtimestamp(d["dt"]).month for d in forecast]
+        df["day_number"] = [datetime.fromtimestamp(d["dt"]).day for d in forecast]
+        df["day"] = [datetime.fromtimestamp(d["dt"]) for d in forecast]
+        df["day"] = df["day"].dt.strftime("%A %d. %B %Y").str.extract(r'(\w+)\s')
+        df["workingday"] = [int(d not in ["Saturday","Sunday"]) for d in df["day"]]
+        #liste des jours de vacances : (month,day)
+        liste_holiday = [(7, 4),(4, 16),(1, 2),(9, 3),(10, 8),(1, 17),(4, 15),(9, 5),(10, 10),(11, 12),(1, 16),(11, 11)]
+        season = []
+        holiday = []
+        for i in range(len(df)):
+            month = df.loc[i]["month"]
+            day = df.loc[i]["day_number"]
 
-        # vacances ?
-        if (month,day) in liste_holiday:
-            holiday.append(1)
-        else:
-            holiday.append(0)
+            # vacances ?
+            if (month,day) in liste_holiday:
+                holiday.append(1)
+            else:
+                holiday.append(0)
 
-        # saison :
-        if  "03 20" <= df.loc[i]["datetime"] <= "06 20":
-            season.append(1)
-        elif  "06 21" <= df.loc[i]["datetime"] <= "09 22":
-            season.append(2)
-        elif  "09 23" < df.loc[i]["datetime"] < "12 22":
-            season.append(3)
-        else:
-            season.append(4)
+            # saison :
+            if  "03 20" <= df.loc[i]["datetime"] <= "06 20":
+                season.append(1)
+            elif  "06 21" <= df.loc[i]["datetime"] <= "09 22":
+                season.append(2)
+            elif  "09 23" < df.loc[i]["datetime"] < "12 22":
+                season.append(3)
+            else:
+                season.append(4)
 
-    df["season"] = season
-    df["holiday"] = holiday
+        df["season"] = season
+        df["holiday"] = holiday
+
+    else:
+        df = pd.read_csv("bike_sharing_app/all_data.csv")
+        df.drop("atemp",axis=1)
+        df = df[(df["day_number"]==day) & (df["hour"] == hour) & (df["month"] == month) & (df["year"] == 2011)]
+        df.drop(["weather", "count", "atemp"], axis=1, inplace=True)
 
     return df.drop("datetime", axis=1)
