@@ -74,7 +74,6 @@ def table_prediction():
 def make_pred():
     form = PredictionForm()
     if form.validate_on_submit():
-        flash("Cela peut prendre quelques minutes", category="success")
         hour = form.hour.data
         date = form.date.data
         month = form.date.data.month
