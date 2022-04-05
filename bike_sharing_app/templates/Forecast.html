@@ -5,19 +5,28 @@
 {% endblock %}
 
 {% block content %}
-    <section class="row col-10">
-        <h1> Prédiction pour la date du {{ date }} à {{ hour }}h00</h2>
-        <section class="col-4">
-            <h2> Casual </h2>
-            <p>{{ casual }}</p>
+    <section class="row col-10 mx-auto my-5">
+        <h1 class="text-center col-12 text-success"> Prédiction pour la date du {{ date }} à {{ hour }}h00</h2>
+        <section class="col-4 mt-5">
+            <h2 class="text-center text-white col-12 bg-success m-0"> Casual </h2>
+            <p class="text-center text-white forecast">{{ casual }}</p>
         </section>
-        <section class="col-4">
-            <h2> Registered </h2>
-            <p>{{ registered }}</p>
+        <section class="col-4 mt-5">
+            <h2 class="text-center text-white col-12 bg-success m-0"> Registered </h2>
+            <p class="text-center text-white forecast">{{ registered }}</p>
         </section>
-        <section class="col-4">
-            <h2> Count </h2>
-            <p>{{ count }}</p>
+        <section class="col-4 mt-5">
+            <h2 class="text-center text-white col-12 bg-success m-0"> Count </h2>
+            <p class="text-center text-white forecast">{{ count }}</p>
         </section>
     </section>
+    <p class="col-12 text-center" id="paragraphe">
+        {% if weather==0 %}
+            La météo pour cette période est <b>très bonne</b>, <span>pas de réduction</span> à prévoir
+        {% elif weather==1 %}
+            La météo pour cette période est <b>très mauvaise</b>, <span>grosse réduction</span> à prévoir
+        {% else %}
+            La météo pour cette période est <b>moyenne</b>, <span>petite réduction</span> à prévoir
+        {% endif %}
+    </p>
 {% endblock %}

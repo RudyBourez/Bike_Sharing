@@ -76,24 +76,26 @@ def make_pred():
     if form.validate_on_submit():
         flash("Cela peut prendre quelques minutes", category="success")
         hour = form.hour.data
+        date = form.date.data
         month = form.date.data.month
         day = form.date.data.day
-        return redirect(url_for("prediction",month=month, day=day, hour=hour))
+        return redirect(url_for("prediction",month=month, day=day, hour=hour, date=date))
     return render_template("afficher.html", form=form)
 
-@app.route("/prediction/<month>&<day>&<hour>")
+@app.route("/prediction/<date>&<month>&<day>&<hour>")
 @login_required
-def prediction(month, day, hour):
+def prediction(date, month, day, hour):
     df = create_df(with_meteo=False, month=int(month), day=int(day), hour=int(hour))
     response = requests.get(f"https://bike-sharing-rfm-api.herokuapp.com/{df.to_json(orient='columns')}")
-    count = eval(response.json())["count"].values()
-    registered = eval(response.json())["registred"].values()
-    casual = eval(response.json())["casual"].values()
-    weather = eval(response.json())["weather"].values()
-    return render_template("Forecast.html", count=count, registered=registered, casual=casual, weather=weather)
+    count = int(list(eval(response.json())["count"].values())[0])
+    registered = int(list(eval(response.json())["registered"].values())[0])
+    casual = int(list(eval(response.json())["casual"].values())[0])
+    weather = int(list(eval(response.json())["weather"].values())[0])
+    return render_template("Forecast.html", date=date, hour=hour, count=count,
+    registered=registered, casual=casual, weather=weather)
 
 def create_df(with_meteo:bool, day=None, month=None, hour=None):
-    
+    """Allow to create a dataframe for a prediction depending on knowledge of meteorologicals datas"""
     if with_meteo:
         df = pd.DataFrame()
         client = MeteoFranceClient()
