@@ -5,5 +5,19 @@
 {% endblock %}
 
 {% block content %}
-    {{ prediction }}
+    <section class="row col-10">
+        <h1> Prédiction pour la date du {{ date }} à {{ hour }}h00</h2>
+        <section class="col-4">
+            <h2> Casual </h2>
+            <p>{{ casual }}</p>
+        </section>
+        <section class="col-4">
+            <h2> Registered </h2>
+            <p>{{ registered }}</p>
+        </section>
+        <section class="col-4">
+            <h2> Count </h2>
+            <p>{{ count }}</p>
+        </section>
+    </section>
 {% endblock %}

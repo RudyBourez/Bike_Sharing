@@ -86,9 +86,11 @@ def make_pred():
 def prediction(month, day, hour):
     df = create_df(with_meteo=False, month=int(month), day=int(day), hour=int(hour))
     response = requests.get(f"https://bike-sharing-rfm-api.herokuapp.com/{df.to_json(orient='columns')}")
-    print(response.json())
-    prediction = eval(response.json())["count"].values()
-    return render_template("Forecast.html", prediction=prediction)
+    count = eval(response.json())["count"].values()
+    registered = eval(response.json())["registred"].values()
+    casual = eval(response.json())["casual"].values()
+    weather = eval(response.json())["weather"].values()
+    return render_template("Forecast.html", count=count, registered=registered, casual=casual, weather=weather)
 
 def create_df(with_meteo:bool, day=None, month=None, hour=None):
     
