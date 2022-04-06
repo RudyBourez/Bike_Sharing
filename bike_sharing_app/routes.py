@@ -38,12 +38,6 @@ def logout():
     flash("Logged out with success", category="success")
     return redirect(url_for("home"))
 
-
-@app.route("/statistics")
-@login_required
-def statistics():
-    return render_template('Statistics.html')
-
 @app.route("/table_prediction")
 @login_required
 def table_prediction():
@@ -53,7 +47,6 @@ def table_prediction():
     liste_weather = []
     for i in range(len(df)):
         response = requests.get(f"https://bike-sharing-rfm-api.herokuapp.com/{df.iloc[[i]].to_json(orient='columns')}")
-        print("-------------------",response.json())
         liste.append(eval(response.json())["count"].get(f'{i}'))
         liste_weather.append(eval(response.json())["weather"].get(f'{i}'))
     
