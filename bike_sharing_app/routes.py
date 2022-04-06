@@ -1,9 +1,7 @@
 from bike_sharing_app import app
-import pickle
 import pandas as pd
-import numpy as np
 from .forms import LoginForm, PredictionForm
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required
 from .models import User
 from werkzeug.security import check_password_hash
@@ -75,7 +73,7 @@ def make_pred():
     form = PredictionForm()
     if form.validate_on_submit():
         hour = form.hour.data
-        date = form.date.data
+        date = form.date.data.strftime('%d-%m-%Y')
         month = form.date.data.month
         day = form.date.data.day
         return redirect(url_for("prediction",month=month, day=day, hour=hour, date=date))

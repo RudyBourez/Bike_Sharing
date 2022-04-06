@@ -61,19 +61,20 @@ section{
 section h2{
   line-height: 80px;
   border-radius: 20px 20px 0 0;
+  background-color : rgb(130, 194, 98)
 }
 
 .left img{
   margin-left: 8%;
   border-right : 2px solid black;
-  height: 75vh;
+  height: 60vh;
   padding: 5% 8% 5% 0;
 }
 
 .right img{
   margin-right: 8%;
   border-left : 2px solid black;
-  height: 75vh;
+  height: 63vh;
   padding: 5% 0 5% 8%;
 }
 

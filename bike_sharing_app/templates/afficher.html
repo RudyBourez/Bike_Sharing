@@ -6,23 +6,23 @@
 
 {% block content %}
 
-    <h1> Make a prediction</h1>
-    <section class="row mx-auto my-5 bg-white w-75 left">
-        <h2 class="col-12 bg-success text-center text-white"> Prediction Heure par Heure</h2>
+    <h1 class="col-12 text-success mt-5 text-center"> Make a prediction</h1>
+    <section class="row mx-auto align-items-center my-5 bg-white w-75 left">
+        <h2 class="col-12 text-center text-white"> Prediction Heure par Heure</h2>
         <img class="col-5" src="/static/assets/hour_by_hour.jpg">
         <div class="col-6">
-            <p class="ml-5">Réaliser une prédiction précise heure par heure </p>
+            <p class="text-center">Réaliser une prédiction précise heure par heure </p>
             <a href="{{ url_for('table_prediction') }}">
-                <button class="btn btn-lg mx-auto d-block"> Here</button>
+                <input type="button" class="btn btn-lg btn-success mx-auto w-50 d-block" id="button" value="Here">
             </a>
         </div> 
     </section>
 
-    <section class="row flex-row-reverse mx-auto my-5 bg-white w-75 right">
-        <h2 class="col-12 bg-success text-center text-white"> Prediction sans données météorologiques</h2>
+    <section class="row flex-row-reverse align-items-center mx-auto my-5 bg-white w-75 right">
+        <h2 class="col-12 text-center text-white"> Prediction sans données météorologiques</h2>
         <img class="col-5" src="/static/assets/prevision.jpg">
         <div class="col-6">
-            <p class="ml-5">Réaliser une prédiction à une date bien précise </p>
+            <p class="text-center">Réaliser une prédiction à une date bien précise </p>
             <form method="POST" class="col-6 mt-5 mx-auto">
                 {{ form.hidden_tag() }}
                 <div class="form-group">
@@ -33,7 +33,7 @@
                     {{ form.hour.label() }}
                     {{ form.hour(class="form-control") }}
                 </div>
-                {{ form.submit(class="btn btn-lg btn-primary d-block", id="button") }}
+                {{ form.submit(class="btn btn-lg btn-success d-block", id="button") }}
             </form>
         </div> 
     </section>
