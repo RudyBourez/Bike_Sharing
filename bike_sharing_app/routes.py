@@ -50,13 +50,20 @@ def table_prediction():
     df = create_df()
     #modele : 
     liste = []
+    liste_weather = []
     for i in range(len(df)):
         response = requests.get(f"https://bike-sharing-rfm-api.herokuapp.com/{df.iloc[[i]].to_json(orient='columns')}")
+        print("-------------------",response.json())
         liste.append(eval(response.json())["count"].get(f'{i}'))
+        liste_weather.append(eval(response.json())["weather"].get(f'{i}'))
     
     # df_pred to put in html page
-    df_pred = df[["month","day","day_number","hour"]]
+    df_pred=pd.DataFrame()
+    df_pred["date"] = [f"{d}/{m}" for d,m in zip(df["day_number"],df["month"])]
+    df_pred["day"] = df["day"]
+    df_pred["hour"] = df["hour"]
     df_pred["count"] = [round(i) for i in liste]
+    df_pred["weather"] = liste_weather
 
     #graphique :
     fig = px.scatter(df_pred[0:36], x='hour', y='count', color='day')
@@ -64,7 +71,7 @@ def table_prediction():
 
     #graphique moyen terme:
     
-    fig2 = px.scatter(df_pred[37:], x='hour', y='count', color=df['day_number'][37:].astype(str))
+    fig2 = px.scatter(df_pred[37:], x='hour', y='count', color=df_pred['date'][37:])
     graphJSON_moyen = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
 
     return render_template("table_prediction.html",pred = df_pred.to_dict(orient="split"),graphJSON=graphJSON,graphJSON_moyen=graphJSON_moyen)
