@@ -38,12 +38,6 @@ def logout():
     flash("Logged out with success", category="success")
     return redirect(url_for("home"))
 
-
-@app.route("/statistics")
-@login_required
-def statistics():
-    return render_template('Statistics.html')
-
 @app.route("/table_prediction")
 @login_required
 def table_prediction():
