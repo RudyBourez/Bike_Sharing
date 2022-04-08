@@ -60,18 +60,6 @@
         var graphs = {{ graphJSON | safe}};
         Plotly.plot('chart', graphs, {});
       </script>
-
-      <div class="shadow mr-5">
-        <h2 id="titre_graph2">Prévision moyen terme </h1>
-          <div id="graph2">
-            <div id='chart2' class='chart' ”></div>
-          </div>
-      </div>
-      <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
-      <script type='text/javascript'>
-        var graphs = {{ graphJSON_moyen | safe}};
-        Plotly.plot('chart2', graphs, {});
-      </script>
     </div>
   </div>
 {% endblock %}

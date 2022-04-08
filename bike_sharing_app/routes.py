@@ -69,15 +69,10 @@ def table_prediction():
     df_pred["weather"] = liste_weather
 
     #graphique :
-    fig = px.scatter(df_pred[0:36], x='hour', y='count', color='day')
+    fig = px.scatter(df_pred, x='hour', y='count', color='day')
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-    #graphique moyen terme:
-    
-    fig2 = px.scatter(df_pred[37:], x='hour', y='count', color=df_pred['date'][37:])
-    graphJSON_moyen = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
-
-    return render_template("table_prediction.html",pred = df_pred.to_dict(orient="split"),graphJSON=graphJSON,graphJSON_moyen=graphJSON_moyen)
+    return render_template("table_prediction.html",pred = df_pred.to_dict(orient="split"),graphJSON=graphJSON)
 
 @app.route("/prediction/<date>&<month>&<day>&<hour>")
 @login_required
@@ -93,15 +88,14 @@ def prediction(date, month, day, hour):
 
 def create_df():
     """Allow to create a dataframe for a prediction with meteofrance-api"""
-    client = MeteoFranceClient()
-    forecast = client.get_forecast(latitude=50.62925, longitude=3.057256).forecast
-    df = pd.DataFrame.from_dict(forecast).iloc[:, :5].drop("sea_level",axis=1)
+    lat, lon, part, API_key = (38.9071923, -77.0368707, "minutely", "c725abd806cc12efca779d14131fa5d8")
+    link = f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={part}&units=metric&appid={API_key}"
+    response = requests.get(link).json()["hourly"]
+    df = pd.DataFrame.from_dict(response).iloc[:,[0,1,4,9]].rename(columns={"wind_speed": "windspeed"})
     df["datetime"] = [datetime.fromtimestamp(line).strftime("%m %d") for line in df["dt"]]
     df["hour"] = [datetime.fromtimestamp(line).hour for line in df["dt"]]
     df["year"] = [datetime.fromtimestamp(line).year for line in df["dt"]]
     df["month"] = [datetime.fromtimestamp(line).month for line in df["dt"]]
-    df["windspeed"] = [item["speed"] for item in df["wind"]]
-    df["temp"] = [item["value"] for item in df["T"]]
     df["day_number"] = [datetime.fromtimestamp(line).day for line in df["dt"]]
     df["day"] = [datetime.fromtimestamp(line).strftime("%A") for line in df["dt"]]
     df["workingday"] = [int(d not in ["Saturday","Sunday"]) for d in df["day"]]
