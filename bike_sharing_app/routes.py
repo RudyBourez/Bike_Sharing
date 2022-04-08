@@ -5,7 +5,6 @@ from flask import render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required
 from .models import User
 from werkzeug.security import check_password_hash
-from meteofrance_api import MeteoFranceClient
 from datetime import datetime
 import json
 import plotly
