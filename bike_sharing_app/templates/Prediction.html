@@ -1,24 +1,24 @@
 {% extends 'Home.html' %}
 
 {% block title %}
-  Predictions
+Predictions
 {% endblock %}
 
 {% block content %}
-    <div class='container mt-5'>
-      <form method="POST" class="form-register row">
-          {{ form.hidden_tag() }}
-        <div class="col-6">
-          {{ form.date.label() }}
-          {{ form.date(placeholder="0m", class="form-control ") }}
-        </div>
-        <div class="col-6">
-          {{ form.hour.label() }}
-          {{ form.hour(placeholder="0m", class="form-control") }}
-        </div>
-        <div class="m-auto">
-          {{ form.submit(class="btn btn-lg mt-5 text-white")}}
-        </div>
-      </form>
+  <div class='container mt-5'>
+    <form method="POST" class="form-register row">
+      {{ form.hidden_tag() }}
+      <div class="col-6">
+        {{ form.date.label() }}
+        {{ form.date(placeholder="0m", class="form-control ") }}
+      </div>
+      <div class="col-6">
+        {{ form.hour.label() }}
+        {{ form.hour(placeholder="0m", class="form-control") }}
+      </div>
+      <div class="m-auto">
+        {{ form.submit(class="btn btn-lg mt-5 text-white")}}
+      </div>
+    </form>
   </div>
 {% endblock %}

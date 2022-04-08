@@ -1,79 +1,77 @@
 {% extends "Home.html" %}
 
 {% block title %}
-Table prediction
+  Table prediction
 {% endblock %}
 
 {% block content %}
-<h1 class="col-12 text-center mt-5 text-success">Prédiction </h1>
-<div class="row justify-content-center col-6">
-  <p class="col-3 green text-center mt-3">Bon temps</p> 
-  <p class="col-3 blue text-center mt-3">Temps moyen</p> 
-  <p class="col-3 red text-center mt-3">Mauvais temps</p> 
-</div>
-<div class="row">
-  <div id="table_pred" class="shadow col-6">
-    <table class="table text-center">
-      <thead>
-        <tr>
-
-          {% for col in pred["columns"][:-1] %}
-          <th scope="col">{{ col }}</th>
-          {% endfor %}
-        </tr>
-      </thead>
-      <tbody>
-        {% for row in pred["data"] %}
-        {% if row[-1]== 0 %}
-        <tr class="green">
-          {% for value in row[:-1]%}
-          <td>{{value}}</td>
-          {% endfor %}
-        </tr>
-        {% endif %}
-        {% if row[-1]== 1 %}
-        <tr class="red">
-          {% for value in row[:-1]%}
-          <td>{{value}}</td>
-          {% endfor %}
-        </tr>
-        {% endif %}
-        {% if row[-1]== 2 %}
-        <tr class="blue">
-          {% for value in row[:-1]%}
-          <td>{{value}}</td>
-          {% endfor %}
-        </tr>
-        {% endif %}
-        {% endfor %}
-
-      </tbody>
-    </table>
+  <h1 class="col-12 text-center mt-5 text-success">Prédiction </h1>
+  <div class="row justify-content-center col-6">
+    <p class="col-3 green text-center mt-3">Bon temps</p>
+    <p class="col-3 blue text-center mt-3">Temps moyen</p>
+    <p class="col-3 red text-center mt-3">Mauvais temps</p>
   </div>
-  <div class="col-6">
-    <div class="shadow mr-5">
-      <h2 id="titre_graph1">Prévision court terme </h1>
-      <div id="graph1">
-        <div id='chart' class='chart' ”></div>
-      </div>
-    </div>
-    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
-    <script type='text/javascript'>
-      var graphs = {{ graphJSON | safe}};
-      Plotly.plot('chart', graphs, {});
-    </script>
+  <div class="row">
+    <div id="table_pred" class="shadow col-6">
+      <table class="table text-center">
+        <thead>
+          <tr>
 
-    <div class="shadow mr-5">
-      <h2 id="titre_graph2">Prévision moyen terme </h1>
-      <div id="graph2">
-        <div id='chart2' class='chart' ”></div>
-      </div>
+            {% for col in pred["columns"][:-1] %}
+              <th scope="col">{{ col }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in pred["data"] %}
+            {% if row[-1]== 0 %}
+              <tr class="green">
+              {% for value in row[:-1]%}
+                <td>{{value}}</td>
+              {% endfor %}
+              </tr>
+            {% elif row[-1]== 1 %}
+            <tr class="red">
+              {% for value in row[:-1]%}
+                <td>{{value}}</td>
+              {% endfor %}
+            </tr>
+            {% else %}
+              <tr class="blue">
+                {% for value in row[:-1]%}
+                  <td>{{value}}</td>
+                {% endfor %}
+              </tr>
+            {% endif %}
+          {% endfor %}
+
+        </tbody>
+      </table>
     </div>
-    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
-    <script type='text/javascript'>
-      var graphs = {{ graphJSON_moyen | safe}};
-      Plotly.plot('chart2', graphs, {});
-    </script>
+    <div class="col-6">
+      <div class="shadow mr-5">
+        <h2 id="titre_graph1">Prévision court terme </h1>
+          <div id="graph1">
+            <div id='chart' class='chart' ”></div>
+          </div>
+      </div>
+      <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+      <script type='text/javascript'>
+        var graphs = {{ graphJSON | safe}};
+        Plotly.plot('chart', graphs, {});
+      </script>
+
+      <div class="shadow mr-5">
+        <h2 id="titre_graph2">Prévision moyen terme </h1>
+          <div id="graph2">
+            <div id='chart2' class='chart' ”></div>
+          </div>
+      </div>
+      <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+      <script type='text/javascript'>
+        var graphs = {{ graphJSON_moyen | safe}};
+        Plotly.plot('chart2', graphs, {});
+      </script>
+    </div>
   </div>
-</div>
 {% endblock %}
